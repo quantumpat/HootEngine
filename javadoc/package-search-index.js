@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"org.hootengine"},{"l":"org.hootengine.display"},{"l":"org.hootengine.input"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"org.hootengine"},{"l":"org.hootengine.core"},{"l":"org.hootengine.display"},{"l":"org.hootengine.input"},{"l":"org.hootengine.scene"},{"l":"org.hootengine.time"}]

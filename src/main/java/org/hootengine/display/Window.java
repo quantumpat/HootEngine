@@ -1,7 +1,10 @@
 package org.hootengine.display;
 
+import org.hootengine.core.Game;
 import org.hootengine.input.KeyListener;
 import org.hootengine.input.MouseListener;
+import org.hootengine.scene.Scene;
+import org.hootengine.time.TimeManager;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -21,9 +24,19 @@ public class Window {
      */
 
     /**
+     * The game object.
+     */
+    private Game game;
+
+    /**
      * The window instance.
      */
     public static Window instance = null;
+
+    /**
+     * The window saved to memory.
+     */
+    private long glfwWindow;
 
     /**
      * The width (in pixels) of the window.
@@ -40,11 +53,6 @@ public class Window {
      */
     private String title;
 
-    /**
-     * The window saved to memory.
-     */
-    private long glfwWindow;
-
 
     /*
      * Main Objects
@@ -53,7 +61,9 @@ public class Window {
     /**
      * Sets the properties of a new game window.
      */
-    private Window() {
+    private Window(Game game) {
+
+        this.game = game;
 
         width = 1280;
         height = 720;
@@ -73,7 +83,7 @@ public class Window {
         System.out.println("Window created using LWJGL version " + Version.getVersion() + "!");
 
         init();
-        loop();
+        startLoop();
 
         //Free the memory
         glfwFreeCallbacks(glfwWindow);
@@ -128,19 +138,30 @@ public class Window {
     }
 
     /**
-     * Starts the window refresh loop
+     * Start the window refresh loop.
      */
-    private void loop() {
+    public void startLoop() {
+
+        float beginTime = TimeManager.getTime();
+        float endTime;
+        float delta = -1.0f;
 
         while (!glfwWindowShouldClose(glfwWindow)) {
-
             //Poll events
             glfwPollEvents();
 
-            glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             glfwSwapBuffers(glfwWindow);
+
+            //Update the scenes
+            if (delta >= 0)
+                game.getSceneManager().update(delta);
+
+            endTime = TimeManager.getTime();
+            delta = endTime - beginTime;
+            beginTime = endTime;
 
         }
 
@@ -154,10 +175,10 @@ public class Window {
     /**
      * @return Returns the game window instance.
      */
-    public static Window get() {
+    public static Window get(Game game) {
 
         if (Window.instance == null) {
-            Window.instance = new Window();
+            Window.instance = new Window(game);
         }
 
         return Window.instance;
