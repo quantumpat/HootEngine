@@ -65,9 +65,9 @@ public class Window {
 
         this.game = game;
 
-        width = 1280;
-        height = 720;
-        title = "New Game";
+        width = game.getConfig().getWidth();
+        height = game.getConfig().getHeight();
+        title = game.getConfig().getTitle();
 
     }
 
@@ -173,7 +173,7 @@ public class Window {
      */
 
     /**
-     * @return Returns the game window instance.
+     * @return The game window instance.
      */
     public static Window get(Game game) {
 

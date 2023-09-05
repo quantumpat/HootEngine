@@ -156,7 +156,7 @@ public class MouseListener {
      */
 
     /**
-     * @return Returns the mouse listener.
+     * @return The mouse listener.
      */
     public static MouseListener get() {
 
@@ -169,63 +169,63 @@ public class MouseListener {
     }
 
     /**
-     * @return Returns the current x-position of the mouse.
+     * @return The current x-position of the mouse.
      */
     public static float getX() {
         return (float) get().x;
     }
 
     /**
-     * @return Returns the current y-position of the mouse.
+     * @return The current y-position of the mouse.
      */
     public static float getY() {
         return (float) get().y;
     }
 
     /**
-     * @return Returns the last x-position of the mouse.
+     * @return The last x-position of the mouse.
      */
     public static float getLastX() {
         return (float) get().lastX;
     }
 
     /**
-     * @return Returns the last y-position of the mouse.
+     * @return The last y-position of the mouse.
      */
     public static float getLastY() {
         return (float) get().lastY;
     }
 
     /**
-     * @return Returns the change in x-position of the mouse.
+     * @return The change in x-position of the mouse.
      */
     public static float getDX() {
         return (float) (get().lastX - get().x);
     }
 
     /**
-     * @return Returns the change in y-position of the mouse.
+     * @return The change in y-position of the mouse.
      */
     public static float getDY() {
         return (float) (get().lastY - get().y);
     }
 
     /**
-     * @return Returns the scroll-x value.
+     * @return The scroll-x value.
      */
     public static float getScrollX() {
         return (float) get().scrollX;
     }
 
     /**
-     * @return Returns the scroll-y value.
+     * @return The scroll-y value.
      */
     public static float getScrollY() {
         return (float) get().scrollY;
     }
 
     /**
-     * @return Returns whether a mouse button is down or not.
+     * @return whether a mouse button is down or not.
      * @param button The mouse button to be checked (0 = left, 1 = right, 2 = middle).
      */
     public static boolean mouseButtonDown(int button) {

@@ -1,6 +1,7 @@
 package org.hootengine.core;
 
 import org.hootengine.display.Window;
+import org.hootengine.scene.Scene;
 import org.hootengine.scene.SceneManager;
 
 public class Game {
@@ -8,6 +9,11 @@ public class Game {
     /*
      * Variables
      */
+
+    /**
+     * Configurations to be used by the game.
+     */
+    private GameConfig config;
 
     /**
      * The main game display.
@@ -28,6 +34,16 @@ public class Game {
      * A new game.
      */
     public Game() {
+
+        config = new GameConfig();
+
+        sceneManager = new SceneManager(this);
+
+    }
+
+    public Game(GameConfig config) {
+
+        this.config = config;
 
         sceneManager = new SceneManager(this);
 
@@ -64,8 +80,8 @@ public class Game {
      */
     private void boot() {
 
-        sceneManager.getCurrentGameScene().start();
         window.run();
+        sceneManager.getCurrentGameScene().start();
 
     }
 
@@ -75,14 +91,21 @@ public class Game {
      */
 
     /**
-     * @return Returns the game window.
+     * @return The game config.
+     */
+    public GameConfig getConfig() {
+        return config;
+    }
+
+    /**
+     * @return The game window.
      */
     public Window getWindow() {
         return window;
     }
 
     /**
-     * @return Returns the scene manager.
+     * @return The scene manager.
      */
     public SceneManager getSceneManager() {
         return sceneManager;

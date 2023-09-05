@@ -17,7 +17,7 @@ public class TimeManager {
      */
 
     /**
-     * @return Returns the current time.
+     * @return The current time.
      */
     public static float getTime() {
         return (float) ((System.nanoTime() - timeStarted) * 1E-9);

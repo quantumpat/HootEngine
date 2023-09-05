@@ -68,7 +68,7 @@ public class SceneManager {
         }
 
         if (scenes.size() == 0) {
-            if (type == SceneType.GAME || type == null) {
+            if (type == SceneType.BASIC || type == null) {
                 currentGameScene = scene;
             }else if (type == SceneType.UI) {
                 currentUIScene = scene;
@@ -133,14 +133,14 @@ public class SceneManager {
      */
 
     /**
-     * @return Returns the game object.
+     * @return The game object.
      */
     public Game getGame() {
         return game;
     }
 
     /**
-     * @return Returns all of the scenes.
+     * @return All the scenes.
      */
     public ArrayList<Scene> getScenes() {
         return scenes;
@@ -148,7 +148,7 @@ public class SceneManager {
 
     /**
      * @param name The name of the scene to be returned.
-     * @return Returns a scene.
+     * @return A scene based on the name parameter.
      */
     public Scene getScene(String name) {
 
@@ -165,14 +165,14 @@ public class SceneManager {
     }
 
     /**
-     * @return Returns the current game scene.
+     * @return The current game scene.
      */
     public Scene getCurrentGameScene() {
         return currentGameScene;
     }
 
     /**
-     * @return Returns the current ui scene.
+     * @return The current ui scene.
      */
     public Scene getCurrentUIScene() {
         return currentUIScene;

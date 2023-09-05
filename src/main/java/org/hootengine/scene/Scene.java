@@ -63,6 +63,13 @@ public abstract class Scene {
         System.out.println("The " + getName() + " scene has started!");
 
         isActive = true;
+
+        init();
+        preload();
+
+        create();
+
+        //Allows the scene to be updated.
         canUpdate = true;
 
     }
@@ -86,6 +93,21 @@ public abstract class Scene {
      */
 
     /**
+     * Initializes the scene.
+     */
+    public abstract void init();
+
+    /**
+     * Preloads all the assets to be used by the scene.
+     */
+    public abstract void preload();
+
+    /**
+     * Creates all the various sprites, sounds, text, ...
+     */
+    public abstract void create();
+
+    /**
      * Updates the scene.
      * @param delta The time difference.
      */
@@ -97,14 +119,14 @@ public abstract class Scene {
      */
 
     /**
-     * @return Returns the game object.
+     * @return The game object.
      */
     public Game getGame() {
         return game;
     }
 
     /**
-     * @return Returns the name of the scene.
+     * @return The name of the scene.
      */
     public String getName() {
         return name;
@@ -118,14 +140,14 @@ public abstract class Scene {
     }
 
     /**
-     * @return Returns whether the scene is active or not.
+     * @return Whether the scene is active or not.
      */
     public boolean getActive() {
         return isActive;
     }
 
     /**
-     * @return Returns whether the scene can update or not.
+     * @return Whether the scene can update or not.
      */
     public boolean getCanUpdate() {
         return canUpdate;

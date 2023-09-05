@@ -7,10 +7,12 @@ public class DemoGame {
     public static void main(String[] args) {
 
         Game game = new Game();
+        game.getConfig().setTitle("Demo Game");
 
         //Add scenes
-        game.getSceneManager().addScene(new DemoScene(game), GAME);
+        game.getSceneManager().addScene(new DemoScene(game), BASIC);
 
+        //Start the game
         game.start();
 
     }

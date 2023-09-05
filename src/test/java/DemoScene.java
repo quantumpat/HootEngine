@@ -10,13 +10,27 @@ public class DemoScene extends Scene {
         super(game, "DemoScene");
     }
 
+
     /*
-     * Update (looped)
+     * Methods
      */
-    @Override
+    public void init() {
+
+    }
+
+    public void preload() {
+
+    }
+
+    public void create() {
+
+    }
+
+    //Update (looped)
     public void update(float delta) {
 
         //System.out.println("" + (1.0f / delta) + "FPS");
+
 
     }
 
