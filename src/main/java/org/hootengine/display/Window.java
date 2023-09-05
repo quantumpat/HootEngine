@@ -3,13 +3,12 @@ package org.hootengine.display;
 import org.hootengine.core.Game;
 import org.hootengine.input.KeyListener;
 import org.hootengine.input.MouseListener;
-import org.hootengine.scene.Scene;
 import org.hootengine.time.TimeManager;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.MemoryUtil;
-
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -108,6 +107,11 @@ public class Window {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         //glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
         //Create the window
@@ -134,6 +138,10 @@ public class Window {
 
         //IMPORTANT!
         GL.createCapabilities();
+        GLUtil.setupDebugMessageCallback();
+
+        if (game.getSceneManager().getCurrentGameScene() != null)
+            game.getSceneManager().getCurrentGameScene().start();
 
     }
 
@@ -150,7 +158,7 @@ public class Window {
             //Poll events
             glfwPollEvents();
 
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             glfwSwapBuffers(glfwWindow);

@@ -1,7 +1,6 @@
 package org.hootengine.core;
 
 import org.hootengine.display.Window;
-import org.hootengine.scene.Scene;
 import org.hootengine.scene.SceneManager;
 
 public class Game {
@@ -81,7 +80,6 @@ public class Game {
     private void boot() {
 
         window.run();
-        sceneManager.getCurrentGameScene().start();
 
     }
 
