@@ -1,5 +1,10 @@
+import org.hootengine.cameras.Camera;
 import org.hootengine.core.Game;
 import org.hootengine.scene.Scene;
+import org.hootengine.shaders.Shader;
+import org.hootengine.textures.Texture;
+import org.hootengine.time.TimeManager;
+import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -14,35 +19,16 @@ public class DemoScene extends Scene {
     /*
      * Variables
      */
-    private String vertexShaderSrc = "#version 330 core\n" +
-            "layout (location=0) in vec3 aPos;\n" +
-            "layout (location=1) in vec4 aColor;\n" +
-            "\n" +
-            "out vec4 fColor;\n" +
-            "\n" +
-            "void main()\n" +
-            "{\n" +
-            "    fColor = aColor;\n" +
-            "    gl_Position = vec4(aPos, 1.0);\n" +
-            "}";
-    private String fragmentShaderSrc = "#version 330 core\n" +
-            "\n" +
-            "in vec4 fColor;\n" +
-            "\n" +
-            "out vec4 color;\n" +
-            "\n" +
-            "void main()\n" +
-            "{\n" +
-            "    color = fColor;\n" +
-            "}";
-    private int vertexId, fragmentId, shaderProgram;
+    private Camera camera;
+    private Shader testShader;
+    private Texture testTexture;
 
     private float[] vertexArray = {
             // position               // color
-            0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom right 0
-            -0.5f,  0.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f, // Top left     1
-            0.5f,  0.5f, 0.0f ,      1.0f, 0.0f, 1.0f, 1.0f, // Top right    2
-            -0.5f, -0.5f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f, // Bottom left  3
+            100.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f,   1, 1, // Bottom right 0
+            -0.5f,  100.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f,  0, 0, // Top left     1
+            100.5f,  100.5f, 0.0f ,      1.0f, 0.0f, 1.0f, 1.0f, 1, 0, // Top right    2
+            -0.5f, -0.5f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f,    0, 1  // Bottom left  3
     };
 
     //IMPORTANT: Must be in counter-clockwise order
@@ -73,55 +59,12 @@ public class DemoScene extends Scene {
      */
     public void init() {
 
-        /*
-         * Vertex
-         */
-        vertexId = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexId, vertexShaderSrc);
-        glCompileShader(vertexId);
+        camera = new Camera(new Vector2f(0, 0));
+        testShader = new Shader("./assets/shaders/defaultTextureShader.glsl");
+        testShader.compile();
 
-        //Check for errors
-        int success = glGetShaderi(vertexId, GL_COMPILE_STATUS);
-        if (success == GL_FALSE) {
-            int len = glGetShaderi(vertexId, GL_INFO_LOG_LENGTH);
-            System.out.println("ERROR: 'defaultShader.glsl' - (vertex) compilation failed!");
-            System.out.println(glGetShaderInfoLog(vertexId, len));
-            assert false : "";
-        }
+        testTexture = new Texture("./assets/images/testImage.jpg");
 
-        /*
-         * Fragment
-         */
-        fragmentId = glCreateShader(GL_FRAGMENT_SHADER);
-        // Pass the shader source to the GPU
-        glShaderSource(fragmentId, fragmentShaderSrc);
-        glCompileShader(fragmentId);
-
-        // Check for errors in compilation
-        success = glGetShaderi(fragmentId, GL_COMPILE_STATUS);
-        if (success == GL_FALSE) {
-            int len = glGetShaderi(fragmentId, GL_INFO_LOG_LENGTH);
-            System.out.println("ERROR: 'defaultShader.glsl'\n\tFragment shader compilation failed.");
-            System.out.println(glGetShaderInfoLog(fragmentId, len));
-            assert false : "";
-        }
-
-        /*
-         * Link shaders
-         */
-        shaderProgram = glCreateProgram();
-        glAttachShader(shaderProgram, vertexId);
-        glAttachShader(shaderProgram, fragmentId);
-        glLinkProgram(shaderProgram);
-
-        // Check for linking errors
-        success = glGetProgrami(shaderProgram, GL_LINK_STATUS);
-        if (success == GL_FALSE) {
-            int len = glGetProgrami(shaderProgram, GL_INFO_LOG_LENGTH);
-            System.out.println("ERROR: 'defaultShader.glsl'\n\tLinking of shaders failed.");
-            System.out.println(glGetProgramInfoLog(shaderProgram, len));
-            assert false : "";
-        }
 
         // ============================================================
         // Generate VAO, VBO, and EBO buffer objects, and send to GPU
@@ -149,13 +92,16 @@ public class DemoScene extends Scene {
         // Add the vertex attribute pointers
         int positionsSize = 3;
         int colorSize = 4;
-        int floatSizeBytes = 4;
-        int vertexSizeBytes = (positionsSize + colorSize) * floatSizeBytes;
+        int uvSize = 2;
+        int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
         glVertexAttribPointer(0, positionsSize, GL_FLOAT, false, vertexSizeBytes, 0);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * floatSizeBytes);
+        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * Float.BYTES);
         glEnableVertexAttribArray(1);
+
+        glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
+        glEnableVertexAttribArray(2);
 
     }
 
@@ -170,9 +116,21 @@ public class DemoScene extends Scene {
     //Update (looped)
     public void update(float delta) {
 
-        System.out.println("" + (1.0f / delta) + "FPS");
+        camera.position.x -= 1;
+        camera.position.y -= 1;
 
-        glUseProgram(shaderProgram);
+        //System.out.println("" + (1.0f / delta) + "FPS");
+
+        testShader.use();
+
+        testShader.uploadTexture("TEXTURE_SAMPLER", 0);
+        glActiveTexture(GL_TEXTURE0);
+        testTexture.bind();
+
+        testShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
+        testShader.uploadMat4f("uView", camera.getViewMatrix());
+        testShader.uploadFloat("uTime", TimeManager.getTime());
+
         // Bind the VAO that we're using
         glBindVertexArray(vaoId);
 
@@ -186,9 +144,7 @@ public class DemoScene extends Scene {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
 
-        glBindVertexArray(0);
-
-        glUseProgram(0);
+        testShader.detach();
 
     }
 

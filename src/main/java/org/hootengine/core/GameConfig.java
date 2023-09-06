@@ -1,5 +1,7 @@
 package org.hootengine.core;
 
+import org.hootengine.util.color.RGBA;
+
 public class GameConfig {
 
     /*
@@ -30,6 +32,11 @@ public class GameConfig {
      * The current version of the game.
      */
     private String version = "1.0.0";
+
+    /**
+     * The background color of the screen (really just the clear color).
+     */
+    private RGBA backgroundColor = new RGBA(0, 0, 0, 1.0);
 
     /*
      * Main Objects
@@ -76,6 +83,15 @@ public class GameConfig {
     }
 
     /**
+     * @param width The width of the game's window (in pixels).
+     * @param height The height of the game's window (in pixels).
+     */
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    /**
      * @return The title of the game, appears at the top of the game window.
      */
     public String getTitle() {
@@ -115,6 +131,40 @@ public class GameConfig {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    /**
+     * @return The background color of the screen (really just the clear color).
+     */
+    public RGBA getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    /**
+     * @param backgroundColor The background color of the screen (really just the clear color).
+     */
+    public void setBackgroundColor(RGBA backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    /**
+     * @param red The red value.
+     * @param green The green value.
+     * @param blue The blue value.
+     * @param alpha The alpha or opacity value.
+     */
+    public void setBackgroundColor(float red, float green, float blue, float alpha) {
+        backgroundColor = new RGBA(red, green, blue, alpha);
+    }
+
+    /**
+     * @param red The red value.
+     * @param green The green value.
+     * @param blue The blue value.
+     * @param alpha The alpha or opacity value.
+     */
+    public void setBackgroundColor(int red, int green, int blue, double alpha) {
+        backgroundColor = new RGBA(red, green, blue, alpha);
     }
 
 }

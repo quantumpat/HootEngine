@@ -4,6 +4,7 @@ import org.hootengine.core.Game;
 import org.hootengine.input.KeyListener;
 import org.hootengine.input.MouseListener;
 import org.hootengine.time.TimeManager;
+import org.hootengine.util.color.RGBA;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -52,6 +53,11 @@ public class Window {
      */
     private String title;
 
+    /**
+     * The background color of the screen (really just the clear color).
+     */
+    private RGBA backgroundColor = new RGBA(0, 0, 0, 1.0);
+
 
     /*
      * Main Objects
@@ -67,6 +73,7 @@ public class Window {
         width = game.getConfig().getWidth();
         height = game.getConfig().getHeight();
         title = game.getConfig().getTitle();
+        backgroundColor = game.getConfig().getBackgroundColor();
 
     }
 
@@ -108,10 +115,13 @@ public class Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+
+        //Needed for macos
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         //glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
         //Create the window
@@ -158,14 +168,14 @@ public class Window {
             //Poll events
             glfwPollEvents();
 
-            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glClearColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), backgroundColor.getAlpha());
             glClear(GL_COLOR_BUFFER_BIT);
-
-            glfwSwapBuffers(glfwWindow);
 
             //Update the scenes
             if (delta >= 0)
                 game.getSceneManager().update(delta);
+
+            glfwSwapBuffers(glfwWindow);
 
             endTime = TimeManager.getTime();
             delta = endTime - beginTime;
@@ -181,6 +191,13 @@ public class Window {
      */
 
     /**
+     * @return The game object.
+     */
+    public Game getGame() {
+        return game;
+    }
+
+    /**
      * @return The game window instance.
      */
     public static Window get(Game game) {
@@ -191,6 +208,41 @@ public class Window {
 
         return Window.instance;
 
+    }
+
+    /**
+     * @return The window saved to memory.
+     */
+    public long getGlfwWindow() {
+        return glfwWindow;
+    }
+
+    /**
+     * @return The width (in pixels) of the window.
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * @return The height (in pixels) of the window.
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * @return The title of the window.
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @return The background color of the screen (really just the clear color).
+     */
+    public RGBA getBackgroundColor() {
+        return backgroundColor;
     }
 
 }

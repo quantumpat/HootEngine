@@ -8,6 +8,7 @@ public class DemoGame {
 
         Game game = new Game();
         game.getConfig().setTitle("Demo Game");
+        game.getConfig().setBackgroundColor(255, 255, 255, 1.0);
 
         //Add scenes
         game.getSceneManager().addScene(new DemoScene(game), BASIC);
