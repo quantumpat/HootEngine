@@ -1,6 +1,14 @@
 package org.hootengine.scene;
 
+import org.hootengine.cameras.Camera;
 import org.hootengine.core.Game;
+import org.hootengine.gameobjects.GameObject;
+import org.hootengine.gameobjects.GameObjectManager;
+import org.hootengine.gameobjects.sprites.Sprite;
+import org.hootengine.rendering.Renderer;
+import org.joml.Vector2f;
+
+import java.util.ArrayList;
 
 public abstract class Scene {
 
@@ -17,6 +25,18 @@ public abstract class Scene {
      * The name of the scene.
      */
     private String name;
+
+    /**
+     * Manages all the game objects.
+     */
+    private GameObjectManager gameObjectManager;
+
+    /**
+     * The default camera of the scene.
+     */
+    private Camera defaultCamera;
+
+    private Renderer renderer;
 
     /**
      * Whether the scene is active or not.
@@ -44,6 +64,12 @@ public abstract class Scene {
         this.game = game;
         this.name = name;
 
+        gameObjectManager = new GameObjectManager(this);
+
+        defaultCamera = new Camera(new Vector2f(0, 0));
+
+        renderer = new Renderer(this);
+
     }
 
 
@@ -69,8 +95,29 @@ public abstract class Scene {
 
         create();
 
+        ArrayList<GameObject> gameObjects = getGameObjectManager().getGameObjects();
+
+        for (GameObject go: gameObjects) {
+            go.start();
+
+            if (go instanceof Sprite) {
+                renderer.addSprite((Sprite) go);
+            }
+        }
+
         //Allows the scene to be updated.
         canUpdate = true;
+
+    }
+
+    /**
+     * Called before the update method (looped)
+     *
+     * @param delta The time difference.
+     */
+    public void preUpdate(float delta) {
+
+        gameObjectManager.update(delta);
 
     }
 
@@ -137,6 +184,20 @@ public abstract class Scene {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Manages all the game objects.
+     */
+    public GameObjectManager getGameObjectManager() {
+        return gameObjectManager;
+    }
+
+    /**
+     * @return The default camera of the scene.
+     */
+    public Camera getDefaultCamera() {
+        return defaultCamera;
     }
 
     /**

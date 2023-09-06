@@ -1,10 +1,14 @@
 import org.hootengine.cameras.Camera;
 import org.hootengine.core.Game;
+import org.hootengine.gameobjects.GameObject;
+import org.hootengine.gameobjects.sprites.Sprite;
+import org.hootengine.gameobjects.sprites.SpriteRenderer;
 import org.hootengine.scene.Scene;
 import org.hootengine.shaders.Shader;
 import org.hootengine.textures.Texture;
 import org.hootengine.time.TimeManager;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -58,50 +62,28 @@ public class DemoScene extends Scene {
      * Methods
      */
     public void init() {
-
-        camera = new Camera(new Vector2f(0, 0));
         testShader = new Shader("./assets/shaders/defaultTextureShader.glsl");
         testShader.compile();
 
         testTexture = new Texture("./assets/images/testImage.jpg");
 
+        int xOffset = 10;
+        int yOffset = 10;
 
-        // ============================================================
-        // Generate VAO, VBO, and EBO buffer objects, and send to GPU
-        // ============================================================
-        vaoId = glGenVertexArrays();
-        glBindVertexArray(vaoId);
+        float totalWidth = (float)(600 - xOffset * 2);
+        float totalHeight = (float)(300 - yOffset * 2);
+        float sizeX = totalWidth / 100.0f;
+        float sizeY = totalHeight / 100.0f;
+        float padding = 3;
 
-        // Create a float buffer of vertices
-        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertexArray.length);
-        vertexBuffer.put(vertexArray).flip();
+        for (int x=0; x < 100; x++) {
+            for (int y=0; y < 100; y++) {
+                float xPos = xOffset + (x * sizeX) + (padding * x);
+                float yPos = yOffset + (y * sizeY) + (padding * y);
 
-        // Create VBO upload the vertex buffer
-        vboId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vboId);
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-
-        // Create the indices and upload
-        IntBuffer elementBuffer = BufferUtils.createIntBuffer(elementArray.length);
-        elementBuffer.put(elementArray).flip();
-
-        eboId = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
-
-        // Add the vertex attribute pointers
-        int positionsSize = 3;
-        int colorSize = 4;
-        int uvSize = 2;
-        int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
-        glVertexAttribPointer(0, positionsSize, GL_FLOAT, false, vertexSizeBytes, 0);
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * Float.BYTES);
-        glEnableVertexAttribArray(1);
-
-        glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
-        glEnableVertexAttribArray(2);
+                Sprite sprite = new Sprite(this, "Patrick", (new Vector4f(xPos / totalWidth, yPos / totalHeight, 1, 1)));
+            }
+        }
 
     }
 
@@ -116,35 +98,7 @@ public class DemoScene extends Scene {
     //Update (looped)
     public void update(float delta) {
 
-        camera.position.x -= 1;
-        camera.position.y -= 1;
-
         //System.out.println("" + (1.0f / delta) + "FPS");
-
-        testShader.use();
-
-        testShader.uploadTexture("TEXTURE_SAMPLER", 0);
-        glActiveTexture(GL_TEXTURE0);
-        testTexture.bind();
-
-        testShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
-        testShader.uploadMat4f("uView", camera.getViewMatrix());
-        testShader.uploadFloat("uTime", TimeManager.getTime());
-
-        // Bind the VAO that we're using
-        glBindVertexArray(vaoId);
-
-        // Enable the vertex attribute pointers
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
-
-        // Unbind everything
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-
-        testShader.detach();
 
     }
 

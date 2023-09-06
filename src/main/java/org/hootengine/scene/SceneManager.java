@@ -1,6 +1,7 @@
 package org.hootengine.scene;
 
 import org.hootengine.core.Game;
+import org.hootengine.gameobjects.GameObjectManager;
 
 import java.util.ArrayList;
 
@@ -115,14 +116,18 @@ public class SceneManager {
 
         //Update the game scene
         if (currentGameScene != null) {
-            if (currentGameScene.getCanUpdate())
+            if (currentGameScene.getCanUpdate()) {
+                currentGameScene.preUpdate(delta);
                 currentGameScene.update(delta);
+            }
         }
 
         //Update the ui scene.
         if (currentUIScene != null) {
-            if (currentUIScene.getCanUpdate())
+            if (currentUIScene.getCanUpdate()) {
+                currentUIScene.preUpdate(delta);
                 currentUIScene.update(delta);
+            }
         }
 
     }

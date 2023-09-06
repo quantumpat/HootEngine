@@ -1,6 +1,8 @@
 package org.hootengine.core;
 
 import org.hootengine.display.Window;
+import org.hootengine.gameobjects.GameObject;
+import org.hootengine.gameobjects.GameObjectManager;
 import org.hootengine.scene.SceneManager;
 
 public class Game {
